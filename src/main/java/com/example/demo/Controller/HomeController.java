@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.DTO.StudentDTO;
 import com.example.demo.Entity.Student;
 import com.example.demo.Service.StudentService;
+import com.example.demo.DTO.StudentRequestDTO;
 
 import jakarta.validation.Valid;
 
@@ -41,16 +42,16 @@ public class HomeController {
     @GetMapping("/students/{id}")
     public ResponseEntity<StudentDTO> getStudentById(@Valid @PathVariable Integer id) {
         StudentDTO student = studentService.getStudentById(id);
-        return ResponseEntity.ok(student);
+        return ResponseEntity.status(HttpStatus.OK).body(student);
     }
     @PostMapping("/students")
-    public ResponseEntity<Student> createStudent(@Valid @RequestBody Student student) {
-        Student createdStudent = studentService.createStudent(student);
+    public ResponseEntity<StudentDTO> createStudent(@Valid @RequestBody StudentRequestDTO student) {
+        StudentDTO createdStudent = studentService.createStudent(student);
         return ResponseEntity.status(201).body(createdStudent);
     }
     @PutMapping("/students/{id}")
-    public ResponseEntity<Student> updateStudent(@Valid @PathVariable Integer id, @Valid @RequestBody Student updatedStudent) {
-        Student student = studentService.updateStudent(id, updatedStudent);
+    public ResponseEntity<StudentDTO> updateStudent(@Valid @PathVariable Integer id, @Valid @RequestBody StudentRequestDTO updatedStudent) {
+        StudentDTO student = studentService.updateStudent(id, updatedStudent);
         if (student != null) {
             return ResponseEntity.ok(student);
         } else {

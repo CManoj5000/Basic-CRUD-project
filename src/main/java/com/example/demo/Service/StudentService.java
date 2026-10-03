@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.DTO.StudentDTO;
+import com.example.demo.DTO.StudentRequestDTO;
 import com.example.demo.Entity.Student;
 import com.example.demo.Exceptions.StudentNotFoundException;
 import com.example.demo.Repository.Repo;
@@ -25,7 +26,8 @@ public class StudentService {
                     student.getId(),
                     student.getName(),
                     student.getBranch(),
-                    student.getPhone_no()
+                    student.getPhone_no(),
+                    student.getEmail()
             ))
             .toList();
 }
@@ -39,15 +41,18 @@ public class StudentService {
             student.getId(),
             student.getName(),
             student.getBranch(),
-            student.getPhone_no()
+            student.getPhone_no(),
+            student.getEmail()
     );
 }
 
-    public Student createStudent(Student student) {
-        return repo.save(student);
+    public StudentDTO createStudent(StudentRequestDTO student) {
+        Student newStudent = new Student(null, student.getName(), student.getPhone_no(), null, student.getEmail(), student.getBranch());
+        Student savedStudent = repo.save(newStudent);
+        return new StudentDTO(savedStudent.getId(), savedStudent.getName(), savedStudent.getBranch(), savedStudent.getPhone_no(), savedStudent.getEmail());
     }
 
-    public Student updateStudent(int id, Student updatedStudent) {
+    public StudentDTO updateStudent(int id, StudentRequestDTO updatedStudent) {
         Optional<Student> optionalStudent = repo.findById(id);
         if (optionalStudent.isPresent()) {
             Student existingStudent = optionalStudent.get();
@@ -55,7 +60,8 @@ public class StudentService {
             existingStudent.setEmail(updatedStudent.getEmail());
             existingStudent.setBranch(updatedStudent.getBranch());
             existingStudent.setPhone_no(updatedStudent.getPhone_no());
-            return repo.save(existingStudent);
+            Student savedStudent = repo.save(existingStudent);
+            return new StudentDTO(savedStudent.getId(), savedStudent.getName(), savedStudent.getBranch(), savedStudent.getPhone_no(), savedStudent.getEmail());
         }
         return null;
     }
